@@ -1,0 +1,74 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>D3.js: Proportion Bubble Chart</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+  #vis {
+    max-width: 600px;
+  }
+  </style>
+
+
+</head>
+
+<body>
+
+<h1>D3.js: Proportion bubble chart</h1>
+By <a href="http://twitter.com/jensfinnas">Jens Finnäs</a>. Grab code at Github,
+
+
+<h2>How we spend our billions</h2>
+<button class="btn btn-default btn-lg slide-nav disabled prev" data-direction="-1">Back</button>
+<button class="btn btn-default btn-lg slide-nav next" data-direction="+1">Show me more</button>
+<div id="vis"></div>
+
+<small>Based on data from Information is <a href="">Beautiful's Billion Dollar-o-Gram</a></small>
+
+  <script src="js/libs/d3.3.5.5.min.js"></script>
+  <script src="js/libs/jquery.2.1.3.min.js"></script>
+  <script src="js/proportionChart.js"></script>
+  <script type="text/javascript">
+
+  $(document).ready(function() {
+    d3.tsv('data/data.tsv', function(tsv) {
+      var data = tsv.map(function(d) {
+        d.value = +d.value;
+        return d;
+      }).sort(function(a, b){ return d3.ascending(a.value, b.value); })
+
+      var chart = new ProportionChart('#vis', data);
+
+      $('.slide-nav').click(function() {
+        var direction = $(this).attr('data-direction');
+        var newIndex = chart.selectedIndex + 1 * direction;
+        if (newIndex < chart.data.length && newIndex >= 0) {
+          chart.selectedIndex = chart.selectedIndex + 1 * direction;
+          chart.update();
+        }
+        $('.slide-nav').removeClass('disabled');
+        if (newIndex == chart.data.length) {
+          $('.slide-nav.next').addClass('disabled');
+        }
+        else if (newIndex == 0) {
+          $('.slide-nav.prev').addClass('disabled');
+        }
+        return false;
+      });
+    })
+  });
+  </script>
+
+</body>
+</html>
